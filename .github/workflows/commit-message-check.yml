@@ -1,0 +1,27 @@
+name: Commit Message Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - main  # or any branch you want to enforce it on
+
+jobs:
+  commit-message-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Check Commit Messages
+        run: |
+          COMMIT_MSG_PATTERN="^[A-Z]{2,5}-[0-9]+: .{10,}"
+          git log --oneline --no-merges | while read commit_hash commit_message; do
+            if [[ ! "$commit_message" =~ $COMMIT_MSG_PATTERN ]]; then
+              echo "Error: Invalid commit message format: '$commit_message'"
+              echo "Commit messages must be in the format: ABC-123: Commit message"
+              exit 1
+            fi
+          done
