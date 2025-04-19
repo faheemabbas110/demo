@@ -17,7 +17,7 @@ jobs:
 
       - name: Check Commit Messages
         run: |
-          COMMIT_MSG_PATTERN=".{10,}"
+          COMMIT_MSG_PATTERN="^[A-Z]{2,5}-[0-9]+: .{10,}"
           git log --oneline --no-merges | while read commit_hash commit_message; do
             if [[ ! "$commit_message" =~ $COMMIT_MSG_PATTERN ]]; then
               echo "Error: Invalid commit message format: '$commit_message'"
